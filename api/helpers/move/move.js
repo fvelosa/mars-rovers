@@ -1,5 +1,10 @@
 'use strict';
 
+/* 
+* This library handles the movement of the rover
+* All functions get a x,y,d object and move the object to a new location
+*/
+
 module.exports = {
 	doRoute: doRoute,
 	moveStep: moveStep,

@@ -1,7 +1,7 @@
 'use strict';
 
 var collectionFactory = require('./factories/collectionFactory')
-var move = require('./move')
+var move = require('../move/move')
 var rovers = require('./rovers')
 
 var routes = collectionFactory()
