@@ -1,5 +1,5 @@
 {
-  "name": "api-demo",
+  "name": "mars-rover",
   "version": "0.0.1",
   "private": true,
   "description": "New Swagger API Project",
@@ -9,9 +9,18 @@
   "main": "app.js",
   "dependencies": {
     "express": "^4.12.3",
-    "swagger-express-mw": "^0.1.0"
+    "swagger-express-mw": "^0.1.0",
+    "lodash": "^3.10.1"
   },
   "devDependencies": {
+    "async": "^1.5.2",
+    "chai": "^3.4.1",
+    "gulp": "^3.9.0",
+    "gulp-mocha": "^2.2.0",
+    "gulp-nodemon": "^2.0.6",
+    "gulp-notify": "^2.2.0",
+    "gulp-using": "^0.1.0",
+    "require-dir": "^0.3.0",
     "should": "^7.1.0",
     "supertest": "^1.0.0"
   },

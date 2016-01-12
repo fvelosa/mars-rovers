@@ -21,17 +21,19 @@ produces:
   - application/json
 paths:
   '/rovers':
-    x-swagger-router-controller: rovers
     get:
       description: Returns all rovers from the system that the user has access to
-      operationId: getAll
+      x-swagger-router-controller: rovers
       responses:
         '200':
           description: The request has succeeded
           schema:
+            type: array
+            items:
               $ref: '#/definitions/rover-set'
     post:
       description: Creates a rover
+      x-swagger-router-controller: rovers
       parameters:
         - name: rover
           in: body
@@ -45,9 +47,9 @@ paths:
           schema:
             $ref: '#/definitions/rover'
   '/rovers/{id}':
-    x-swagger-router-controller: rovers
     get:
       description: 'Returns a single rover'
+      x-swagger-router-controller: rover
       parameters:
         - name: id
           in: path
@@ -62,8 +64,7 @@ paths:
             $ref: '#/definitions/rover'
     delete:
       description: Deletes a single rover based on the ID supplied
-      produces:
-        - text/plain
+      x-swagger-router-controller: rover
       parameters:
         - name: id
           in: path
@@ -74,12 +75,12 @@ paths:
       responses:
         '200':
           description: Rover deleted
-  '/rovers/{id}/routes':
-    x-swagger-router-controller: routes
+  '/rovers/{r-id}/routes':
     get:
       description: Returns all routes for a single rover that the user has access to
+      x-swagger-router-controller: rover_routes
       parameters:
-        - name: id
+        - name: r-id
           in: path
           description: ID of rover to fetch
           required: true
@@ -103,8 +104,9 @@ paths:
             $ref: '#/definitions/route-set'
     post:
       description: Creates a new route to a single rover
+      x-swagger-router-controller: rover_routes
       parameters:
-        - name: id
+        - name: r-id
           in: path
           description: ID to fetch
           required: true
@@ -122,9 +124,9 @@ paths:
           schema:
             $ref: '#/definitions/route'
   '/rovers/{id}/routes/{r-id}':
-    x-swagger-router-controller: rover_route
     get:
       description: 'Returns a single route'
+      x-swagger-router-controller: rover_route
       parameters:
         - name: id
           in: path
@@ -145,8 +147,7 @@ paths:
             $ref: '#/definitions/route'
     delete:
       description: deletes a single route based on the ID supplied
-      produces:
-        - text/plain
+      x-swagger-router-controller: rover_route
       parameters:
         - name: id
           in: path
@@ -165,6 +166,7 @@ paths:
           description: Route deleted
     patch:
       description: 'Changes a part of a single route object'
+      x-swagger-router-controller: rover_route
       parameters:
         - name: id
           in: path
@@ -190,27 +192,32 @@ paths:
           schema:
             $ref: '#/definitions/rover'
   '/routes/':
-    x-swagger-router-controller: routes
     get:
       description: Returns all routes the user has access to
-      operationId: getAll
+      x-swagger-router-controller: routes
       parameters:
         - name: status
           in: query
           description: status to filter by
           required: false
           type: string
+        - name: size
+          in: query
+          description: maximum number of results to return
+          required: false
+          type: integer
+          format: int32
       responses:
         '200':
           description: Success
           schema:
             $ref: '#/definitions/route-set'
-  '/routes/{id}':
-    x-swagger-router-controller: routes
+  '/routes/{r-id}':
     get:
       description: 'Returns a single route'
+      x-swagger-router-controller: route
       parameters:
-        - name: id
+        - name: r-id
           in: path
           description: ID to fetch
           required: true
@@ -223,8 +230,9 @@ paths:
             $ref: '#/definitions/route'
     delete:
       description: deletes a single route based on the ID supplied
+      x-swagger-router-controller: route
       parameters:
-        - name: id
+        - name: r-id
           in: path
           description: ID to delete
           required: true
@@ -243,24 +251,31 @@ definitions:
         type: integer
       y:
         type: integer
-      d:
+      direction:
         $ref: '#/definitions/direction'
   rover-set:
-    type: array
-    items:
-      $ref: '#/definitions/rover'
+    type: object
+    properties:
+      size:
+        type: integer
+      total_size:
+        type: integer
+      contents:
+        type: array
+        items:
+          $ref: '#/definitions/rover'
   new-rover:
     type: object
     required:
       - x
       - y
-      - d
+      - dir
     properties:
       x:
         type: integer
       y:
         type: integer
-      d:
+      dir:
         type: string
   route:
     type: object
@@ -272,9 +287,16 @@ definitions:
       moves:
         type: string
   route-set:
-    type: array
-    items:
-      $ref: '#/definitions/route'
+    type: object
+    properties:
+      size:
+        type: integer
+      total_size:
+        type: integer
+      contents:
+        type: array
+        items:
+          $ref: '#/definitions/route'
   route-update:
     type: object
     properties:
