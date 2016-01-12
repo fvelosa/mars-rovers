@@ -124,18 +124,24 @@ describe('Integration Tests', function () {
 			});
 	});
 
-	it('creates object and gets object', function (done) {
+	it('creates objects and does the route', function (done) {
 		var rover = {
 			x: 0,
 			y: 0,
 			d: 'N'
 		}
-
-		var route = {
-			moves: 'RMLMRM'
+		
+		var rover1 = {
+			x: 5,
+			y: 5,
+			d: 'N'
 		}
 
-		var rover_id, route_id
+		var route = {
+			moves: 'MRMLLMLM'
+		}
+
+		var rover_id, route_id, rover1_id, route1_id
 
 		async.series([
 			// Creates rover
@@ -166,7 +172,44 @@ describe('Integration Tests', function () {
 						should.not.exist(err);
 
 						expect(res.body.x).to.eq(0)
+						expect(res.body.y).to.eq(0)
+						expect(res.body.d).to.eq('N')
 						expect(res.body.id).to.eq(rover_id)
+
+						cb()
+					})
+			},
+			// Creates rover 1
+			function (cb) {
+				request(address)
+					.post('/rovers')
+					.send(rover1)
+					.expect('Content-Type', /json/)
+					.expect(200)
+					.end(function (err, res) {
+						should.not.exist(err);
+
+						rover1_id = res.body.id
+
+						expect(res.body.x).to.eq(rover1.x)
+
+						cb()
+					})
+			},
+			// Checks rover 1
+			function (cb) {
+				request(address)
+					.get('/rovers/' + rover1_id)
+					.set('Accept', 'application/json')
+					.expect('Content-Type', /json/)
+					.expect(200)
+					.end(function (err, res) {
+						should.not.exist(err);
+
+						expect(res.body.x).to.eq(rover1.x)
+						expect(res.body.y).to.eq(rover1.y)
+						expect(res.body.d).to.eq(rover1.d)
+						expect(res.body.id).to.eq(rover1_id)
 
 						cb()
 					})
@@ -201,6 +244,76 @@ describe('Integration Tests', function () {
 						expect(res.body.moves).to.eq(route.moves)
 						expect(res.body.id).to.eq(route_id)
 						expect(res.body.rover_id).to.eq(rover_id)
+
+						cb()
+					})
+			},
+			// Creates route 1
+			function (cb) {
+				request(address)
+					.post('/rovers/' + rover1_id + '/routes')
+					.send(route)
+					.expect('Content-Type', /json/)
+					.expect(200)
+					.end(function (err, res) {
+						should.not.exist(err);
+
+						route1_id = res.body.id
+
+						expect(res.body.moves).to.eq(route.moves)
+
+						cb()
+					})
+			},
+			// Checks route 1
+			function (cb) {
+				request(address)
+					.get(/routes/ + route1_id)
+					.set('Accept', 'application/json')
+					.expect('Content-Type', /json/)
+					.expect(200)
+					.end(function (err, res) {
+						should.not.exist(err);
+
+						expect(res.body.moves).to.eq(route.moves)
+						expect(res.body.id).to.eq(route1_id)
+						expect(res.body.rover_id).to.eq(rover1_id)
+
+						cb()
+					})
+			},
+			// Checks rover again afert moves
+			function (cb) {
+				request(address)
+					.get('/rovers/' + rover_id)
+					.set('Accept', 'application/json')
+					.expect('Content-Type', /json/)
+					.expect(200)
+					.end(function (err, res) {
+						should.not.exist(err);
+
+						expect(res.body.x).to.eq(0)
+						expect(res.body.y).to.eq(0)
+						expect(res.body.d).to.eq('S')
+						expect(res.body.id).to.eq(rover_id)
+
+						cb()
+					})
+			},
+			// Checks rover 1 again afert moves
+			function (cb) {
+				request(address)
+					.get('/rovers/' + rover1_id)
+					.set('Accept', 'application/json')
+					.expect('Content-Type', /json/)
+					.expect(200)
+					.end(function (err, res) {
+						should.not.exist(err);
+
+						expect(res.body.x).to.eq(rover1.x)
+						expect(res.body.y).to.eq(rover1.y)
+						expect(res.body.d).to.eq('S')
+						expect(res.body.id).to.eq(rover1_id)
 
 						cb()
 					})
