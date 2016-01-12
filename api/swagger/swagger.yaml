@@ -121,79 +121,11 @@ paths:
           description: Resource created successfully
           schema:
             $ref: '#/definitions/route'
-  '/rovers/{id}/routes/{r-id}':
-    x-swagger-router-controller: rover_route
-    get:
-      description: 'Returns a single route'
-      parameters:
-        - name: id
-          in: path
-          description: ID of rover to fetch
-          required: true
-          type: integer
-          format: int64
-        - name: r-id
-          in: path
-          description: ID of route to fetch
-          required: true
-          type: integer
-          format: int64
-      responses:
-        '200':
-          description: The request has succeeded
-          schema:
-            $ref: '#/definitions/route'
-    delete:
-      description: deletes a single route based on the ID supplied
-      produces:
-        - text/plain
-      parameters:
-        - name: id
-          in: path
-          description: ID of the rover to fetch
-          required: true
-          type: integer
-          format: int64
-        - name: r-id
-          in: path
-          description: ID of the route to delete
-          required: true
-          type: integer
-          format: int64
-      responses:
-        '200':
-          description: Route deleted
-    patch:
-      description: 'Changes a part of a single route object'
-      parameters:
-        - name: id
-          in: path
-          description: ID of rover to fetch
-          required: true
-          type: integer
-          format: int64
-        - name: r-id
-          in: path
-          description: ID of route to update
-          required: true
-          type: integer
-          format: int64
-        - name: route updates
-          in: body
-          description: update fields
-          required: true
-          schema:
-            $ref: '#/definitions/route-update'
-      responses:
-        '200':
-          description: rover required
-          schema:
-            $ref: '#/definitions/rover'
   '/routes/':
     x-swagger-router-controller: routes
     get:
       description: Returns all routes the user has access to
-      operationId: getAll
+      operationId: getAllRoutes
       parameters:
         - name: status
           in: query
@@ -221,18 +153,6 @@ paths:
           description: Success
           schema:
             $ref: '#/definitions/route'
-    delete:
-      description: deletes a single route based on the ID supplied
-      parameters:
-        - name: id
-          in: path
-          description: ID to delete
-          required: true
-          type: integer
-          format: int64
-      responses:
-        '200':
-          description: Route deleted
 definitions:
   rover:
     type: object
@@ -275,19 +195,6 @@ definitions:
     type: array
     items:
       $ref: '#/definitions/route'
-  route-update:
-    type: object
-    properties:
-      op:
-        type: string
-        enum:
-          - update
-      path:
-        type: string
-        enum:
-          - status
-      content:
-        $ref: '#/definitions/status'
   new-route:
     type: object
     required:
@@ -302,9 +209,3 @@ definitions:
       - S
       - E
       - W
-  status:
-    type: string
-    enum:
-      - planned
-      - ongoing
-      - completed

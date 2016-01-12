@@ -3,7 +3,7 @@
 var routes = require('../helpers/models/routes')
 
 module.exports = {
-	getAll: getAll,
+	getAllRoutes: getAll,
 	post: post,
 	get: get
 }
