@@ -2,6 +2,9 @@
 
 var SwaggerExpress = require('swagger-express-mw');
 var app = require('express')();
+
+var logger = require('morgan');
+
 module.exports = app; // for testing
 
 var config = {
@@ -10,6 +13,8 @@ var config = {
 
 // Disable 304 in the browser
 app.disable('etag')
+
+app.use(logger('dev'));
 
 SwaggerExpress.create(config, function (err, swaggerExpress) {
 	if (err) {
